@@ -1,5 +1,6 @@
 be/uantwerpen/dc/studyassistant/StudyAssistant.class
 be/uantwerpen/dc/studyassistant/network/NetworkUtility$2.class
+be/uantwerpen/dc/studyassistant/index/StudyIndex.class
 be/uantwerpen/dc/studyassistant/network/NetworkUtility.class
 be/uantwerpen/dc/studyassistant/entities/Environment.class
 be/uantwerpen/dc/studyassistant/network/NetworkUtility$1.class

@@ -23,7 +23,11 @@ public class Environment {
     private String imagename;
     private Double bmp180temp;
     private Double bmp180pressure;
-
+    private Integer arduinoalcohol;
+    private Integer arduinomethaine;
+    private Integer arduinoloudness;
+    private Integer arduinolight;
+    
     public Environment() {
 
     }
@@ -119,6 +123,40 @@ public class Environment {
     public void setBmp180pressure(Double bmp180pressure) {
         this.bmp180pressure = bmp180pressure;
     }
+
+    public Integer getArduinoalcohol() {
+        return arduinoalcohol;
+    }
+
+    public void setArduinoalcohol(Integer arduinoalcohol) {
+        this.arduinoalcohol = arduinoalcohol;
+    }
+
+    public Integer getArduinomethaine() {
+        return arduinomethaine;
+    }
+
+    public void setArduinomethaine(Integer arduinomethaine) {
+        this.arduinomethaine = arduinomethaine;
+    }
+
+    public Integer getArduinoloudness() {
+        return arduinoloudness;
+    }
+
+    public void setArduinoloudness(Integer arduinoloudness) {
+        this.arduinoloudness = arduinoloudness;
+    }
+
+    public Integer getArduinolight() {
+        return arduinolight;
+    }
+
+    public void setArduinolight(Integer arduinolight) {
+        this.arduinolight = arduinolight;
+    }
+    
+    
     
     @Override
     public String toString(){
@@ -134,6 +172,10 @@ public class Environment {
         sb.append("imagename="+this.getImagename()+"\n");
         sb.append("bmp180temp="+this.getBmp180temp()+"\n");
         sb.append("bmp180pressure="+this.getBmp180pressure()+"\n");
+        sb.append("arduinoalcohol="+this.getArduinoalcohol()+"\n");
+        sb.append("arduinolight="+this.getArduinolight()+"\n");
+        sb.append("arduinoloudness="+this.getArduinoloudness()+"\n");
+        sb.append("arduinomethaine="+this.getArduinomethaine()+"\n");        
         sb.append("*****************************");
          
         return sb.toString();

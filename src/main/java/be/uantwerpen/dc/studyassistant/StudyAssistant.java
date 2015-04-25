@@ -64,7 +64,18 @@ public class StudyAssistant extends HttpServlet {
         {
             Environment cse = gson.fromJson( obj , Environment.class);
             lcs.add(cse);
-        }        
+        } 
+        
+        Integer min = Integer.MAX_VALUE;
+        Integer max = Integer.MIN_VALUE;
+        for(Environment e: lcs){
+            if(e.getArduinoloudness()!= null && e.getArduinoloudness() < min){
+                min = e.getArduinoloudness();
+            }            
+            if(e.getArduinoloudness() != null && e.getArduinoloudness() > max){
+                max = e.getArduinoloudness();
+            }
+        }
         
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
@@ -78,6 +89,9 @@ public class StudyAssistant extends HttpServlet {
             for(Environment e: lcs){
                 out.println(e.toString()); 
             }
+            
+            out.println("Noise MAX: " + max);
+            out.println("Noise MIN: " + min);
             
             out.println("</body>");
             out.println("</html>");

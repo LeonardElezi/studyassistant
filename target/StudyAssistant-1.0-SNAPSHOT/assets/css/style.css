@@ -224,6 +224,13 @@ Intro
 	border-bottom:1px solid #fff;
 }
 
+.img-icon {
+	width: 20%;
+	margin:0 auto;
+	margin-top: 20px;
+	margin-bottom: 25px;
+}
+
 .intro-text p span {
 	color:#fff;
 	font-size: 24px;
