@@ -33,8 +33,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author leonardelezi
  */
-@WebServlet(name = "StudyAssistant", urlPatterns = {"/resources", "/resources/gauge", "/resources/humidity", "/resources/temperature", "/resources/loudness", "/resources/light"})
+@WebServlet(name = "StudyAssistant", urlPatterns = {"/resources", "/resources/gauge", "/resources/humidity", "/resources/temperature", "/resources/loudness", "/resources/light", "/resources/bubbleindex","/resources/minmax"})
 public class StudyAssistant extends HttpServlet {
+    
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -88,13 +89,6 @@ public class StudyAssistant extends HttpServlet {
         } else if(urlPath.equalsIgnoreCase("/resources/gauge")){
             Environment lastRecord = this.getLastEnvironmentRecord();
             
-//            var jsonData = {
-//                    cols: [{id: 'Host Name', label: 'Host Name', type: 'string'},
-//                           {id: 'Value', label: 'Value', type: 'number'}],
-//                    rows: [{c:[{v: 'bongo'}, {v: 24}]},
-//                           {c:[{v: 'chappie'}, {v: 78}]}]
-//                    }
-            
             StudyIndex inx = new StudyIndex(lastRecord);
             double index = inx.getStudyIndex();
             index *= 100;
@@ -108,6 +102,7 @@ public class StudyAssistant extends HttpServlet {
             // create an array called cols
             JsonArray cols = new JsonArray();
             JsonArray rows = new JsonArray();
+            JsonArray messages = new JsonArray();
             
             JsonObject col = new JsonObject();
             col.addProperty("id", "Index");
@@ -140,6 +135,63 @@ public class StudyAssistant extends HttpServlet {
             
             obj.add("rows", rows);
             
+            
+            
+            
+            String msg = "";
+            if((inx.alcoholIndex < 0.90)||(inx.methaneIndex < 0.90)){
+                msg += "Room needs better air circulation."; 
+                JsonObject msg1 = new JsonObject();
+                msg1.addProperty("text", msg);
+                messages.add(msg1);
+            }
+            
+            JsonObject msg2 = new JsonObject();
+            msg = "";
+            if(lastRecord.getArduinolight() < StudyIndex.lightOptimalValue){
+                msg += "Increase room luminance!";                
+            } else if (lastRecord.getArduinolight() > StudyIndex.lightOptimalValue){
+                msg += "Lower room luminance!";
+            } else {
+                msg += "Room luminance is optimal!";
+            }            
+            msg2.addProperty("text", msg);
+            messages.add(msg2);
+            
+            JsonObject msg3 = new JsonObject();
+            msg = "";
+            if(lastRecord.getDs18b20temp() < StudyIndex.temperatureOptimalValue){
+                msg += "Increase room temperature!";                
+            } else if (lastRecord.getDs18b20temp() > StudyIndex.temperatureOptimalValue){
+                msg += "Lower room temperature!";
+            } else {
+                msg += "Room temperature is optimal!";
+            } 
+            msg3.addProperty("text", msg);
+            messages.add(msg3);
+            
+            JsonObject msg4 = new JsonObject();
+            msg = "";
+            if (lastRecord.getArduinoloudness() > StudyIndex.loudnessOptimalValue){
+                msg += "Room is too noisy. Find a quiter place!";
+                msg4.addProperty("text", msg);
+                messages.add(msg4);
+            }   
+            
+            JsonObject msg5 = new JsonObject();
+            msg = "";
+            if(lastRecord.getDs18b20temp() < StudyIndex.temperatureOptimalValue){
+                msg += "Humidity is less than optimal.";                
+            } else if (lastRecord.getDs18b20temp() > StudyIndex.temperatureOptimalValue){
+                msg += "Humidity is above optimal.";
+            } else {
+                msg += "Humidity is optimal!";
+            }
+            msg5.addProperty("text", msg);
+            messages.add(msg5);
+            
+            obj.add("messages", messages);
+            
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
             
             response.setContentType("application/json");
@@ -160,6 +212,12 @@ public class StudyAssistant extends HttpServlet {
             this.printJson(obj, response);            
         } else if (urlPath.equalsIgnoreCase("/resources/light")){            
             JsonObject obj = this.getCoreChartsJson("Light");
+            this.printJson(obj, response);            
+        } else if (urlPath.equalsIgnoreCase("/resources/bubbleindex")){            
+            JsonObject obj = this.getCoreChartsJson("Index");
+            this.printJson(obj, response);            
+        } else if (urlPath.equalsIgnoreCase("/resources/minmax")){            
+            JsonObject obj = this.findMinMax();
             this.printJson(obj, response);            
         }
     }
@@ -217,6 +275,16 @@ public class StudyAssistant extends HttpServlet {
                     v2.addProperty("v", e.getArduinoloudness());                    
                 } else if(property.equalsIgnoreCase("light")){
                     v2.addProperty("v", e.getArduinolight());                    
+                } else if(property.equalsIgnoreCase("index")){
+                    StudyIndex in = null;
+                    double index = 0;
+                    try{
+                        in = new StudyIndex(e);  
+                        index = in.getStudyIndex();
+                    } catch (Exception exc){
+                        Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, exc);                                                
+                    }
+                    v2.addProperty("v", index);
                 }
                 
                 row.add(v2);
@@ -288,6 +356,220 @@ public class StudyAssistant extends HttpServlet {
             } 
             
             return lcs.get(0);  
+        
+    }
+    
+    private JsonObject findMinMax(){
+        ArrayList<Environment> envs = this.getEnvironmentResources();
+        
+        Double minTemperature = Double.MAX_VALUE;
+        Double maxTemperature = Double.MIN_NORMAL;
+        
+        Double minHumidity = Double.MAX_VALUE;
+        Double maxHumidity = Double.MIN_NORMAL;
+        
+        Double minLoudness = Double.MAX_VALUE;
+        Double maxLoudness = Double.MIN_NORMAL;
+        
+        Double minLight = Double.MAX_VALUE;
+        Double maxLight = Double.MIN_NORMAL;
+        
+        Double minAlcohol = Double.MAX_VALUE;
+        Double maxAlcohol = Double.MIN_NORMAL;
+        
+        Double minMethaine = Double.MAX_VALUE;
+        Double maxMethaine = Double.MIN_NORMAL;
+        
+        Double minPressure = Double.MAX_VALUE;
+        Double maxPressure = Double.MIN_NORMAL;
+        
+        for(Environment e: envs){
+            if(e.getDs18b20temp()!= null && e.getDs18b20temp() < minTemperature){
+                minTemperature = Double.parseDouble(e.getDs18b20temp()+"");
+            }  
+            
+            if(e.getDs18b20temp() != null && e.getDs18b20temp() > maxTemperature){
+                maxTemperature = Double.parseDouble(e.getDs18b20temp()+"");
+            }
+            
+            if(e.getDht11hum()!= null && e.getDht11hum() < minHumidity){
+                minHumidity = Double.parseDouble(e.getDht11hum()+"");
+            }  
+            
+            if(e.getDht11hum() != null && e.getDht11hum() > maxHumidity){
+                maxHumidity = Double.parseDouble(e.getDht11hum()+"");
+            }
+            
+            if(e.getArduinolight()!= null && e.getArduinolight() < minLight){
+                minLight = Double.parseDouble(e.getArduinolight()+"");
+            }  
+            
+            if(e.getArduinolight() != null && e.getArduinolight() > maxLight){
+                maxLight = Double.parseDouble(e.getArduinolight()+"");
+            }
+            
+            if(e.getArduinoloudness()!= null && e.getArduinoloudness() < minLoudness){
+                minLoudness = Double.parseDouble(e.getArduinoloudness()+"");
+            }  
+            
+            if(e.getArduinoloudness() != null && e.getArduinoloudness() > maxLoudness){
+                maxLoudness = Double.parseDouble(e.getArduinoloudness()+"");
+            }
+            
+                        
+            if(e.getArduinoalcohol()!= null && e.getArduinoalcohol() < minAlcohol){
+                minAlcohol = Double.parseDouble(e.getArduinoalcohol()+"");
+            }  
+            
+            if(e.getArduinoalcohol() != null && e.getArduinoalcohol() > maxAlcohol){
+                maxAlcohol = Double.parseDouble(e.getArduinoalcohol()+"");
+            }
+            
+            if(e.getArduinomethaine() != null && e.getArduinomethaine() < minMethaine){
+                minMethaine = Double.parseDouble(e.getArduinomethaine()+"");
+            }  
+            
+            if(e.getArduinomethaine() != null && e.getArduinomethaine() > maxMethaine){
+                maxMethaine = Double.parseDouble(e.getArduinomethaine()+"");
+            }
+            
+            if(e.getBmp180pressure() != null && e.getBmp180pressure() < minPressure){
+                minPressure = Double.parseDouble(e.getBmp180pressure()+"");
+            }  
+            
+            if(e.getBmp180pressure() != null && e.getBmp180pressure() > maxPressure){
+                maxPressure = Double.parseDouble(e.getBmp180pressure()+"");
+            }
+            
+        }
+        
+        ArrayList<String> types = new ArrayList<String>();
+        types.add("Temperature");
+        types.add("Humidity");
+        types.add("Loudness");
+        types.add("Luminance");
+        types.add("Alcohol");
+        types.add("Methaine");
+        types.add("Pressure");
+        
+            JsonObject obj = new JsonObject();
+            
+            // create an array called cols
+            JsonArray cols = new JsonArray();
+            JsonArray rows = new JsonArray();
+            
+            JsonObject col = new JsonObject();
+            col.addProperty("id", "Variable");
+            col.addProperty("label", "Variable");
+            col.addProperty("type", "string");
+            cols.add(col);
+            
+            JsonObject col2 = new JsonObject();
+            col2.addProperty("id", "Minimum");
+            col2.addProperty("label", "Minimum");
+            col2.addProperty("type", "number");
+            cols.add(col2);  
+            
+            JsonObject col3 = new JsonObject();
+            col3.addProperty("id", "Maximum");
+            col3.addProperty("label", "Maximum");
+            col3.addProperty("type", "number");
+            cols.add(col3); 
+            
+            obj.add("cols", cols);
+            
+            for(String s: types){
+                JsonObject c = new JsonObject(); 
+                JsonArray row = new JsonArray();
+
+                JsonObject v1 = new JsonObject();
+                v1.addProperty("v", s);
+                row.add(v1);
+
+                
+                if(s.equalsIgnoreCase("temperature")){
+                    JsonObject v2 = new JsonObject();
+                    v2.addProperty("v", minTemperature);
+                    row.add(v2);
+                    
+                    JsonObject v3 = new JsonObject();
+                    v3.addProperty("v", maxTemperature);                
+                    row.add(v3);
+                    
+                    c.add("c", row);
+                    rows.add(c);
+                } else if(s.equalsIgnoreCase("humidity")){
+                    JsonObject v2 = new JsonObject();
+                    v2.addProperty("v", minHumidity);
+                    row.add(v2);
+                    
+                    JsonObject v3 = new JsonObject();
+                    v3.addProperty("v", maxHumidity);                
+                    row.add(v3);
+                    
+                    c.add("c", row); 
+                    rows.add(c);
+                } else if(s.equalsIgnoreCase("loudness")){
+                    JsonObject v2 = new JsonObject();
+                    v2.addProperty("v", minLoudness);
+                    row.add(v2);
+                    
+                    JsonObject v3 = new JsonObject();
+                    v3.addProperty("v", maxLoudness);                
+                    row.add(v3);
+                    
+                    c.add("c", row); 
+                    rows.add(c);
+                } else if(s.equalsIgnoreCase("luminance")){
+                    JsonObject v2 = new JsonObject();
+                    v2.addProperty("v", minLight);
+                    row.add(v2);
+                    
+                    JsonObject v3 = new JsonObject();
+                    v3.addProperty("v", maxLight);                
+                    row.add(v3);
+                    
+                    c.add("c", row); 
+                    rows.add(c);
+                } else if(s.equalsIgnoreCase("alcohol")){
+                    JsonObject v2 = new JsonObject();
+                    v2.addProperty("v", minAlcohol);
+                    row.add(v2);
+                    
+                    JsonObject v3 = new JsonObject();
+                    v3.addProperty("v", maxAlcohol);                
+                    row.add(v3);
+                    
+                    c.add("c", row); 
+                    rows.add(c);
+                } else if(s.equalsIgnoreCase("methaine")){
+                    JsonObject v2 = new JsonObject();
+                    v2.addProperty("v", minMethaine);
+                    row.add(v2);
+                    
+                    JsonObject v3 = new JsonObject();
+                    v3.addProperty("v", maxMethaine);                
+                    row.add(v3);
+                    
+                    c.add("c", row); 
+                    rows.add(c);
+                } else if(s.equalsIgnoreCase("pressure")){
+                    JsonObject v2 = new JsonObject();
+                    v2.addProperty("v", minPressure);
+                    row.add(v2);
+                    
+                    JsonObject v3 = new JsonObject();
+                    v3.addProperty("v", maxPressure);                
+                    row.add(v3);
+                    
+                    c.add("c", row); 
+                    rows.add(c);
+                }                         
+            }
+            
+            obj.add("rows", rows);
+            
+            return obj;
         
     }
 

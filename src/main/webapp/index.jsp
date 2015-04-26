@@ -29,7 +29,7 @@
                     </li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#services">Study Index</a></li>
-                    <li><a href="#works">Charts</a></li>
+                    <li><a href="#works">Timeline</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li>
                         <a href="#">Sub Menu</a>
@@ -139,6 +139,7 @@
                             <p>Index is a number between 0 (Worst environment conditions) and 100% (Best environment conditions). It is gives a score to your environment and predicts the productivity gains from your environment.</p>
                             
                             <div id="chart_div" style="width: 400px; height: 120px;"></div>
+                            <div style="margin-top: -135px; margin-left: 80px;"><h3>Advice</h3><div id="advice"><div></div>
 
                         </div>
                     </div>
@@ -151,28 +152,26 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-offset-2 col-md-8">
-                            <h2 style="font-size: 38px; text-transform: uppercase;">Charts</h2>
+                            <h2 style="font-size: 38px; text-transform: uppercase;">Timeline</h2>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-offset-2 col-md-8">
                         <div id="tabs" style=" margin-left: -130px; width: 900px; height: 500px;">
                               <ul>
+                                <li><a id="index_chart_link" href="#index_chart">Index History</a></li>
                                 <li><a id="temperature_chart_link" href="#temperature_chart">Temperature</a></li>
                                 <li><a id="humidity_chart_link" href="#humidity_chart">Humidity</a></li>
                                 <li><a id="loudness_chart_link" href="#loudness_chart">Loudness</a></li>
                                 <li><a id="light_chart_link" href="#light_chart">Light</a></li>
-                                <li><a href="#tabs-3">Bubble Chart</a></li>
+                                <li><a id="extremes_chart_link" href="#light_chart">Extremes</a></li>
                               </ul>
-                                <div id="temperature_chart" style="width: 900px; height: 400px;"></div>
-                                <div id="humidity_chart" style="width: 900px; height: 400px;"></div>
-                                <div id="loudness_chart" style="width: 900px; height: 400px;"><p>Just dummy text</p></div>
-                                <div id="light_chart" style="width: 900px; height: 400px;"><p>Just dummy text</p></div>
-                                <div id="core_chart_div" style="width: 900px; height: 400px;"></div>
-                              <div id="tabs-3">
-                                <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-                                <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
-                              </div>
+                                <div id="index_chart" style="width: 850px; height: 400px;"></div>
+                                <div id="temperature_chart" style="width: 850px; height: 400px;"></div>
+                                <div id="humidity_chart" style="width: 850px; height: 400px;"></div>
+                                <div id="loudness_chart" style="width: 850px; height: 400px;"></div>
+                                <div id="light_chart" style="width: 850px; height: 400px;"></div>
+                                <div id="extremes_chart" style="width: 850px; height: 400px; margin-top: -350px; box-sizing: border-box;"></div>
                             </div>
                     </div>
                 </div>
@@ -296,6 +295,7 @@
         <script type="text/javascript" src="//www.google.com/jsapi"></script>
         <script type="text/javascript" src="//www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['gauge']}]}"></script>
         <script type="text/javascript" src="//www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
+        <script type="text/javascript" src="//www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['table']}]}"></script>
 
         <script type="text/javascript">
             
@@ -330,10 +330,25 @@
                     drawCoreChart(destinationUrl, element, color);
                 });
                 
+                $( "#index_chart_link" ).click(function() {
+                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/bubbleindex";
+                    var element = "index_chart";
+                    var color = "black";
+                    drawLineChart(destinationUrl, element, color);
+                });
+                
+                $( "#extremes_chart_link" ).click(function() {
+                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/minmax";
+                    var element = "extremes_chart";
+                    var color = "magenta";
+                    drawTableChart(destinationUrl, element, color);
+                });
+                
             });
 
-            //google.setOnLoadCallback(drawChart);
-            google.setOnLoadCallback(drawCoreChart("http://localhost:8080/StudyAssistant/resources/temperature", "temperature_chart", "red"));
+            google.setOnLoadCallback(drawChart);
+            //google.setOnLoadCallback(drawCoreChart("http://localhost:8080/StudyAssistant/resources/temperature", "temperature_chart", "red"));
+            google.setOnLoadCallback(drawLineChart("http://localhost:8080/StudyAssistant/resources/bubbleindex", "index_chart", "black"));
             function drawChart() {
 
                 //var destinationUrl = "https://"+window.location.host+"<%=request.getContextPath()%>" + "/resources/gauge";
@@ -344,7 +359,6 @@
                     dataType: "json",
                     async: false
                 }).responseText;
-
 
                 // Create our data table out of JSON data loaded from server.
                 var data = new google.visualization.DataTable(jsonData);
@@ -360,6 +374,15 @@
                 var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
 
                 chart.draw(data, options);
+                
+                var obj = jQuery.parseJSON(jsonData);
+                var htmlString = "<ul>";
+                $.each(obj.messages, function(i, item) {
+                    htmlString += "<li>"+item.text+"</li>"                    
+                });
+                htmlString += "</ul>";
+                $("#advice").html(htmlString);
+                
 
     //        setInterval(function() {
     //          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
@@ -401,6 +424,82 @@
                 };
 
                 var chart = new google.visualization.AreaChart(document.getElementById(element));
+                chart.draw(data, options);
+            }
+            
+            function drawBubbleChart(destUrl, element, color) {
+
+                var jsonData = $.ajax({
+                    url: destUrl,
+                    dataType: "json",
+                    async: false
+                }).responseText;
+
+                var data = new google.visualization.DataTable(jsonData);
+
+    //        var data = google.visualization.arrayToDataTable([
+    //          ['Year', 'Sales', 'Expenses'],
+    //          ['2013',  1000,      400],
+    //          ['2014',  1170,      460],
+    //          ['2015',  660,       1120],
+    //          ['2016',  1030,      540]
+    //        ]);
+
+                var options = {
+                    title: 'Environment History',
+                    colors: [color],
+                    hAxis: {title: 'Date', titleTextStyle: {color: '#333'}},
+                    vAxis: {title: 'Study Index', minValue: 0},
+                    bubble: {textStyle: {fontSize: 11}}
+                };
+
+                var chart = new google.visualization.BubbleChart(document.getElementById(element));
+                chart.draw(data, options);
+            }
+            
+            function drawLineChart(destUrl, element, color) {
+                
+                var jsonData = $.ajax({
+                    url: destUrl,
+                    dataType: "json",
+                    async: false
+                }).responseText;
+
+                var data = new google.visualization.DataTable(jsonData);
+
+                var options = {
+                  title: 'Index History',
+                  colors: [color],
+                  curveType: 'function',
+                  legend: { position: 'bottom' }
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById(element));
+
+                chart.draw(data, options);
+            }
+
+            function drawTableChart(destUrl, element, color) {
+                
+                var jsonData = $.ajax({
+                    url: destUrl,
+                    dataType: "json",
+                    async: false
+                }).responseText;
+                
+                console.log(jsonData);
+                
+                var options = {
+                    title: 'Minimal and maximal values of all sensors',
+                    width: '800px',
+                    height: '350px',
+                    showRowNumber: false
+                };
+
+                var data = new google.visualization.DataTable(jsonData);
+
+                var chart = new google.visualization.Table(document.getElementById(element));
+
                 chart.draw(data, options);
             }
 

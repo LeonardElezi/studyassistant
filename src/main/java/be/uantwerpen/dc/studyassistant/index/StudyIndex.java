@@ -33,13 +33,13 @@ public class StudyIndex {
         10 = 1 - abs(tanh((C14-D6)/(D6 * 42)))
         300 = log((C15/6.5), 50)* 1.3
     */
-    private static final double temperatureOptimalValue = 23.5;
-    private static final double humidityOptimalValue = 50;
-    private static final double pressureOptimalValue = 1013;
-    private static final double alcoholOptimalValue = 120;
-    private static final double methaneOptimalValue = 60;
-    private static final double loudnessOptimalValue = 10;
-    private static final double lightOptimalValue = 300;
+    public static final double temperatureOptimalValue = 23.5;
+    public static final double humidityOptimalValue = 50;
+    public static final double pressureOptimalValue = 1013;
+    public static final double alcoholOptimalValue = 120;
+    public static final double methaneOptimalValue = 60;
+    public static final double loudnessOptimalValue = 10;
+    public static final double lightOptimalValue = 300;
 
     // Variables
     private double temperature = 0.0;
