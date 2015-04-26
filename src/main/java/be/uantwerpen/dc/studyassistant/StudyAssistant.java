@@ -6,14 +6,18 @@
 package be.uantwerpen.dc.studyassistant;
 
 import be.uantwerpen.dc.studyassistant.entities.Environment;
+import be.uantwerpen.dc.studyassistant.index.StudyIndex;
 import be.uantwerpen.dc.studyassistant.network.NetworkUtility;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +33,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author leonardelezi
  */
-@WebServlet(name = "StudyAssistant", urlPatterns = {"/resources"})
+@WebServlet(name = "StudyAssistant", urlPatterns = {"/resources", "/resources/gauge", "/resources/core"})
 public class StudyAssistant extends HttpServlet {
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -45,57 +49,244 @@ public class StudyAssistant extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        URL url = new URL("https://192.168.2.33:8443/logs");        
+        String urlPath = request.getServletPath();
         
-        String jstring = null;
+        if(urlPath.equalsIgnoreCase("/resources")){
+            
+            ArrayList<Environment> lcs = this.getEnvironmentResources();
+
+            Integer min = Integer.MAX_VALUE;
+            Integer max = Integer.MIN_VALUE;
+            for(Environment e: lcs){
+                if(e.getArduinoloudness()!= null && e.getArduinoloudness() < min){
+                    min = e.getArduinoloudness();
+                }            
+                if(e.getArduinoloudness() != null && e.getArduinoloudness() > max){
+                    max = e.getArduinoloudness();
+                }
+            }
+
+            try (PrintWriter out = response.getWriter()) {
+                /* TODO output your page here. You may use following sample code. */
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet StudyAssistant</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Servlet StudyAssistant at " + request.getContextPath() + "</h1>");
+                for(Environment e: lcs){
+                    out.println(e.toString()); 
+                }
+
+                out.println("Noise MAX: " + max);
+                out.println("Noise MIN: " + min);
+
+                out.println("</body>");
+                out.println("</html>");
+            }            
+        } else if(urlPath.equalsIgnoreCase("/resources/gauge")){
+            Environment lastRecord = this.getLastEnvironmentRecord();
+            
+//            var jsonData = {
+//                    cols: [{id: 'Host Name', label: 'Host Name', type: 'string'},
+//                           {id: 'Value', label: 'Value', type: 'number'}],
+//                    rows: [{c:[{v: 'bongo'}, {v: 24}]},
+//                           {c:[{v: 'chappie'}, {v: 78}]}]
+//                    }
+            
+            StudyIndex inx = new StudyIndex(lastRecord);
+            double index = inx.getStudyIndex();
+            index *= 100;
+            
+            index = Math.round(index * 100.0) / 100.0;
+            
+            
+            
+            JsonObject obj = new JsonObject();
+            
+            // create an array called cols
+            JsonArray cols = new JsonArray();
+            JsonArray rows = new JsonArray();
+            
+            JsonObject col = new JsonObject();
+            col.addProperty("id", "Index");
+            col.addProperty("label", "Index");
+            col.addProperty("type", "string");
+            cols.add(col);
+            
+            JsonObject col2 = new JsonObject();
+            col2.addProperty("id", "Value");
+            col2.addProperty("label", "Value");
+            col2.addProperty("type", "number");
+            cols.add(col2);
+            
+            obj.add("cols", cols);
+            
+            JsonObject c = new JsonObject();
+            JsonArray row = new JsonArray();
+            
+            JsonObject v1 = new JsonObject();
+            v1.addProperty("v", "Index");
+            row.add(v1);
+            
+            JsonObject v2 = new JsonObject();
+            v2.addProperty("v", index);
+            row.add(v2);
+            
+            c.add("c", row);
+            
+            rows.add(c);
+            
+            obj.add("rows", rows);
+            
+            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+            
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            
+            
+            PrintWriter out = response.getWriter();
+                                    
+            out.print(gson.toJson(obj));
+        } else if (urlPath.equalsIgnoreCase("/resources/core")){
+            
+            ArrayList<Environment> envs = this.getEnvironmentResources();
+            
+//            var jsonData = {
+//                    cols: [{id: 'Host Name', label: 'Host Name', type: 'string'},
+//                           {id: 'Value', label: 'Value', type: 'number'}],
+//                    rows: [{c:[{v: 'bongo'}, {v: 24}]},
+//                           {c:[{v: 'chappie'}, {v: 78}]}]
+//                    }
+            
+//            StudyIndex inx = new StudyIndex(lastRecord);
+//            double index = inx.getStudyIndex();
+//            index *= 100;
+//            
+//            index = Math.round(index * 100.0) / 100.0;
+            
+            
+            
+            JsonObject obj = new JsonObject();
+            
+            // create an array called cols
+            JsonArray cols = new JsonArray();
+            JsonArray rows = new JsonArray();
+            
+            JsonObject col = new JsonObject();
+            col.addProperty("id", "Time");
+            col.addProperty("label", "Time");
+            col.addProperty("type", "date");
+            cols.add(col);
+            
+            JsonObject col2 = new JsonObject();
+            col2.addProperty("id", "Temperature");
+            col2.addProperty("label", "Temperature");
+            col2.addProperty("type", "number");
+            cols.add(col2);
+            
+            obj.add("cols", cols);
+            
+            
+            
+            for(Environment e: envs ){
+                JsonObject c = new JsonObject();
+                JsonArray row = new JsonArray();
+
+                JsonObject v1 = new JsonObject();
+                v1.addProperty("v", e.getCreated().toString());
+                row.add(v1);
+
+                JsonObject v2 = new JsonObject();
+                v2.addProperty("v", e.getDs18b20temp());
+                row.add(v2);
+
+                c.add("c", row);
+                
+                rows.add(c);
+            }
+            
+            
+            
+            obj.add("rows", rows);
+            
+            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+            
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            
+            
+            PrintWriter out = response.getWriter();
+                                    
+            out.print(gson.toJson(obj));
+            
+        }
+    }
+    
+//    private JsonArray getCoreChartsJson(){
+//        
+//    }
+    
+    private ArrayList<Environment> getEnvironmentResources(){
+        URL url = null;        
         try {
-            jstring = NetworkUtility.request(url, false, true);
-        } catch (Exception ex) {
+            url = new URL("https://192.168.2.33:8443/logs");
+        } catch (MalformedURLException ex) {
             Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create(); 
-        JsonParser parser = new JsonParser();
-        JsonArray jArray = parser.parse(jstring).getAsJsonArray();
-        
-        ArrayList<Environment> lcs = new ArrayList<Environment>();
-        
-        for(JsonElement obj : jArray )
-        {
-            Environment cse = gson.fromJson( obj , Environment.class);
-            lcs.add(cse);
-        } 
-        
-        Integer min = Integer.MAX_VALUE;
-        Integer max = Integer.MIN_VALUE;
-        for(Environment e: lcs){
-            if(e.getArduinoloudness()!= null && e.getArduinoloudness() < min){
-                min = e.getArduinoloudness();
-            }            
-            if(e.getArduinoloudness() != null && e.getArduinoloudness() > max){
-                max = e.getArduinoloudness();
+            String jstring = null;
+            try {
+                jstring = NetworkUtility.request(url, false, true);
+            } catch (Exception ex) {
+                Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create(); 
+            JsonParser parser = new JsonParser();
+            JsonArray jArray = parser.parse(jstring).getAsJsonArray();
+
+            ArrayList<Environment> lcs = new ArrayList<Environment>();
+
+            for(JsonElement obj : jArray )
+            {
+                Environment cse = gson.fromJson( obj , Environment.class);
+                lcs.add(cse);
+            } 
+            
+            return lcs;        
+    }
+    
+    private Environment getLastEnvironmentRecord(){
+        URL url = null;        
+        try {
+            url = new URL("https://192.168.2.33:8443/log");
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet StudyAssistant</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet StudyAssistant at " + request.getContextPath() + "</h1>");
-            for(Environment e: lcs){
-                out.println(e.toString()); 
+            String jstring = null;
+            try {
+                jstring = NetworkUtility.request(url, false, true);
+            } catch (Exception ex) {
+                Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create(); 
+            JsonParser parser = new JsonParser();
+            JsonArray jArray = parser.parse(jstring).getAsJsonArray();
+
+            ArrayList<Environment> lcs = new ArrayList<Environment>();
+
+            for(JsonElement obj : jArray )
+            {
+                Environment cse = gson.fromJson( obj , Environment.class);
+                lcs.add(cse);
+            } 
             
-            out.println("Noise MAX: " + max);
-            out.println("Noise MIN: " + min);
-            
-            out.println("</body>");
-            out.println("</html>");
-        }
+            return lcs.get(0);  
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

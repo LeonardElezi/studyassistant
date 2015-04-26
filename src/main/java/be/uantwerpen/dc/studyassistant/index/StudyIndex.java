@@ -5,6 +5,8 @@
  */
 package be.uantwerpen.dc.studyassistant.index;
 
+import be.uantwerpen.dc.studyassistant.entities.Environment;
+
 /**
  *
  * @author madks_000
@@ -67,6 +69,18 @@ public class StudyIndex {
         this.loudness = loudness;
         this.light = light;
     }
+    
+    public StudyIndex(Environment env) {
+        this.temperature = env.getDs18b20temp();
+        this.temperature = this.temperature/1000.0;
+        this.humidity = env.getDht11hum();
+        this.pressure = env.getBmp180pressure();
+        this.alcohol = env.getArduinoalcohol();
+        this.methane = env.getArduinomethaine();
+        this.loudness = env.getArduinoloudness();
+        this.light = env.getArduinolight();
+    }
+    
     
     private void calculateAllIndices() {
         // do all the Math "stuff"

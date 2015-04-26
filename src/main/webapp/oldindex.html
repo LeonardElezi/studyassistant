@@ -44,7 +44,7 @@
 					<div class="col-md-12">
 			
 						<div class="brand">
-							<h1><a href="index.html">Study Assistant</a></h1>
+							<h1><a href="oldindex.html">Study Assistant</a></h1>
 							<div class="line-spacer"></div>
 							<p><span>Your environment and productivity advisor</span></p>
                                                         <div class="img-icon"><img src="assets/img/icons/thermometer.png" alt="" height="42" width="42"/><img src="assets/img/icons/loud.png" alt="" height="42" width="42"/>  <img src="assets/img/icons/lightbulb.png" alt="" height="42" width="42"/> <img src="assets/img/icons/pollution.png" alt="" height="42" width="42"/></div>
@@ -128,6 +128,9 @@ functions. Moreover, it is always an emotional and decisive factor in increasing
 					<div class="section-heading">
 					 <h2>Services</h2>
 					 <p>Est te congue scaevola comprehensam. No pri simul decore, in partem electram voluptatibus vel esse facer.</p>
+                                         
+                                         <div id="chart_div" style="width: 400px; height: 120px;"></div>
+                                         
 					</div>
 				  </div>
 			  </div>
@@ -417,12 +420,58 @@ functions. Moreover, it is always an emotional and decisive factor in increasing
 		</div>	
 	</footer>
 	 
-	 <!-- js -->
+     <!-- js -->
     <script src="assets/js/jquery.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/jquery.smooth-scroll.min.js"></script>
-	<script src="assets/js/jquery.dlmenu.js"></script>
-	<script src="assets/js/wow.min.js"></script>
-	<script src="assets/js/custom.js"></script>
+    <script src="assets/js/jquery.smooth-scroll.min.js"></script>
+    <script src="assets/js/jquery.dlmenu.js"></script>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['gauge']}]}"></script>
+    <script type="text/javascript">
+    
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+          
+        var destinationUrl = "https://"+window.location.host+"<%=request.getContextPath() %>" + "/resources/gauge";
+                
+          
+        var jsonData = $.ajax({
+          url: destinationUrl,
+          dataType:"json",
+          async: false
+        }).responseText;
+        
+        // Create our data table out of JSON data loaded from server.
+        var data = new google.visualization.DataTable(jsonData);
+
+        var options = {
+          width: 400, height: 120,
+          redFrom: 0, redTo: 60,
+          yellowFrom:60, yellowTo: 85,
+          greenFrom:85, greenTo:100,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+
+//        setInterval(function() {
+//          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+//          chart.draw(data, options);
+//        }, 13000);
+//        setInterval(function() {
+//          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+//          chart.draw(data, options);
+//        }, 5000);
+//        setInterval(function() {
+//          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+//          chart.draw(data, options);
+//        }, 26000);
+      }
+
+    </script>
   	
 </html>
