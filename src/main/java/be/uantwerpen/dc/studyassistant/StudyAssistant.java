@@ -188,14 +188,12 @@ public class StudyAssistant extends HttpServlet {
             
             obj.add("cols", cols);
             
-            
-            
             for(Environment e: envs ){
                 JsonObject c = new JsonObject();
                 JsonArray row = new JsonArray();
 
                 JsonObject v1 = new JsonObject();
-                v1.addProperty("v", e.getCreated().toString());
+                v1.addProperty("v", "Date("+e.getCreated().getTime()+")");
                 row.add(v1);
 
                 JsonObject v2 = new JsonObject();
@@ -211,7 +209,7 @@ public class StudyAssistant extends HttpServlet {
             
             obj.add("rows", rows);
             
-            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
             
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
