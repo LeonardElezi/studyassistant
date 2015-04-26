@@ -158,11 +158,16 @@
                     <div class="col-md-offset-2 col-md-8">
                         <div id="tabs" style=" margin-left: -130px; width: 900px; height: 500px;">
                               <ul>
-                                <li><a href="#temperature_chart">Temperature Tab</a></li>
-                                <li><a id="core_chart_div_link" href="#core_chart_div">Core Chart</a></li>
+                                <li><a id="temperature_chart_link" href="#temperature_chart">Temperature</a></li>
+                                <li><a id="humidity_chart_link" href="#humidity_chart">Humidity</a></li>
+                                <li><a id="loudness_chart_link" href="#loudness_chart">Loudness</a></li>
+                                <li><a id="light_chart_link" href="#light_chart">Light</a></li>
                                 <li><a href="#tabs-3">Bubble Chart</a></li>
                               </ul>
-                                <div id="temperature_chart-1" style="width: 900px; height: 400px;"><p>Just dummy text</p></div>
+                                <div id="temperature_chart" style="width: 900px; height: 400px;"></div>
+                                <div id="humidity_chart" style="width: 900px; height: 400px;"></div>
+                                <div id="loudness_chart" style="width: 900px; height: 400px;"><p>Just dummy text</p></div>
+                                <div id="light_chart" style="width: 900px; height: 400px;"><p>Just dummy text</p></div>
                                 <div id="core_chart_div" style="width: 900px; height: 400px;"></div>
                               <div id="tabs-3">
                                 <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
@@ -297,14 +302,38 @@
             $(function() {
                 $( "#tabs" ).tabs();
                 
-                $( "#core_chart_div_link" ).click(function() {
-                    drawCoreChart();
+                $( "#humidity_chart_link" ).click(function() {
+                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/humidity";
+                    var element = "humidity_chart";
+                    var color = "green";
+                    drawCoreChart(destinationUrl, element, color);
+                });
+                
+                $( "#temperature_chart_link" ).click(function() {
+                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/temperature";
+                    var element = "temperature_chart";
+                    var color = "red";
+                    drawCoreChart(destinationUrl, element, color);
+                });
+                
+                $( "#loudness_chart_link" ).click(function() {
+                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/loudness";
+                    var element = "loudness_chart";
+                    var color = "blue";
+                    drawCoreChart(destinationUrl, element, color);
+                });
+                
+                $( "#light_chart_link" ).click(function() {
+                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/light";
+                    var element = "light_chart";
+                    var color = "orange";
+                    drawCoreChart(destinationUrl, element, color);
                 });
                 
             });
 
-            google.setOnLoadCallback(drawChart);
-            //google.setOnLoadCallback(drawCoreChart);
+            //google.setOnLoadCallback(drawChart);
+            google.setOnLoadCallback(drawCoreChart("http://localhost:8080/StudyAssistant/resources/temperature", "temperature_chart", "red"));
             function drawChart() {
 
                 //var destinationUrl = "https://"+window.location.host+"<%=request.getContextPath()%>" + "/resources/gauge";
@@ -346,10 +375,10 @@
     //        }, 26000);
             }
 
-            function drawCoreChart() {
+            function drawCoreChart(destUrl, element, color) {
 
                 var jsonData = $.ajax({
-                    url: "http://localhost:8080/StudyAssistant/resources/core",
+                    url: destUrl,
                     dataType: "json",
                     async: false
                 }).responseText;
@@ -366,11 +395,12 @@
 
                 var options = {
                     title: 'Environment History',
+                    colors: [color],
                     hAxis: {title: 'Date', titleTextStyle: {color: '#333'}},
                     vAxis: {minValue: 0}
                 };
 
-                var chart = new google.visualization.AreaChart(document.getElementById('core_chart_div'));
+                var chart = new google.visualization.AreaChart(document.getElementById(element));
                 chart.draw(data, options);
             }
 

@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author leonardelezi
  */
-@WebServlet(name = "StudyAssistant", urlPatterns = {"/resources", "/resources/gauge", "/resources/core"})
+@WebServlet(name = "StudyAssistant", urlPatterns = {"/resources", "/resources/gauge", "/resources/humidity", "/resources/temperature", "/resources/loudness", "/resources/light"})
 public class StudyAssistant extends HttpServlet {
     
     /**
@@ -149,24 +149,35 @@ public class StudyAssistant extends HttpServlet {
             PrintWriter out = response.getWriter();
                                     
             out.print(gson.toJson(obj));
-        } else if (urlPath.equalsIgnoreCase("/resources/core")){
+        } else if (urlPath.equalsIgnoreCase("/resources/humidity")){            
+            JsonObject obj = this.getCoreChartsJson("Humidity");
+            this.printJson(obj, response);
+        } else if (urlPath.equalsIgnoreCase("/resources/temperature")){            
+            JsonObject obj = this.getCoreChartsJson("Temperature");
+            this.printJson(obj, response);            
+        } else if (urlPath.equalsIgnoreCase("/resources/loudness")){            
+            JsonObject obj = this.getCoreChartsJson("Loudness");
+            this.printJson(obj, response);            
+        } else if (urlPath.equalsIgnoreCase("/resources/light")){            
+            JsonObject obj = this.getCoreChartsJson("Light");
+            this.printJson(obj, response);            
+        }
+    }
+    
+    private void printJson(JsonObject obj, HttpServletResponse response) throws IOException{
+            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
             
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            
+            PrintWriter out = response.getWriter();
+                                    
+            out.print(gson.toJson(obj));        
+    }
+    
+    private JsonObject getCoreChartsJson(String property){
+        
             ArrayList<Environment> envs = this.getEnvironmentResources();
-            
-//            var jsonData = {
-//                    cols: [{id: 'Host Name', label: 'Host Name', type: 'string'},
-//                           {id: 'Value', label: 'Value', type: 'number'}],
-//                    rows: [{c:[{v: 'bongo'}, {v: 24}]},
-//                           {c:[{v: 'chappie'}, {v: 78}]}]
-//                    }
-            
-//            StudyIndex inx = new StudyIndex(lastRecord);
-//            double index = inx.getStudyIndex();
-//            index *= 100;
-//            
-//            index = Math.round(index * 100.0) / 100.0;
-            
-            
             
             JsonObject obj = new JsonObject();
             
@@ -181,81 +192,43 @@ public class StudyAssistant extends HttpServlet {
             cols.add(col);
             
             JsonObject col2 = new JsonObject();
-            col2.addProperty("id", "Temperature");
-            col2.addProperty("label", "Temperature");
+            col2.addProperty("id", property);
+            col2.addProperty("label", property);
             col2.addProperty("type", "number");
-            cols.add(col2);
-            
-            JsonObject col3 = new JsonObject();
-            col3.addProperty("id", "Humidity");
-            col3.addProperty("label", "Humidity");
-            col3.addProperty("type", "number");
-            cols.add(col3);
-            
-            JsonObject col4 = new JsonObject();
-            col4.addProperty("id", "Loudness");
-            col4.addProperty("label", "Loudness");
-            col4.addProperty("type", "number");
-            cols.add(col4);
-            
-            JsonObject col5 = new JsonObject();
-            col5.addProperty("id", "Light");
-            col5.addProperty("label", "Light");
-            col5.addProperty("type", "number");
-            cols.add(col5);
-            
+            cols.add(col2);            
             
             obj.add("cols", cols);
             
             for(Environment e: envs ){
                 JsonObject c = new JsonObject();
                 JsonArray row = new JsonArray();
-
+                
                 JsonObject v1 = new JsonObject();
                 v1.addProperty("v", "Date("+e.getCreated().getTime()+")");
                 row.add(v1);
-
+                
                 JsonObject v2 = new JsonObject();
-                v2.addProperty("v", e.getDs18b20temp());
+                
+                if(property.equalsIgnoreCase("temperature")){
+                    v2.addProperty("v", e.getDs18b20temp());                    
+                } else if(property.equalsIgnoreCase("humidity")){
+                    v2.addProperty("v", e.getDht11hum());                    
+                } else if(property.equalsIgnoreCase("loudness")){
+                    v2.addProperty("v", e.getArduinoloudness());                    
+                } else if(property.equalsIgnoreCase("light")){
+                    v2.addProperty("v", e.getArduinolight());                    
+                }
+                
                 row.add(v2);
-                
-                JsonObject v3 = new JsonObject();
-                v3.addProperty("v", e.getDht11hum());
-                row.add(v3);
-
-                JsonObject v4 = new JsonObject();
-                v4.addProperty("v", e.getArduinoloudness());
-                row.add(v4);
-                
-                JsonObject v5 = new JsonObject();
-                v5.addProperty("v", e.getArduinolight());
-                row.add(v5);
                 
                 c.add("c", row);
                 
                 rows.add(c);
             }
-            
-            
-            
             obj.add("rows", rows);
             
-            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-            
-            response.setContentType("application/json");
-            response.setCharacterEncoding("utf-8");
-            
-            
-            PrintWriter out = response.getWriter();
-                                    
-            out.print(gson.toJson(obj));
-            
-        }
+            return obj;
     }
-    
-//    private JsonArray getCoreChartsJson(){
-//        
-//    }
     
     private ArrayList<Environment> getEnvironmentResources(){
         URL url = null;        
