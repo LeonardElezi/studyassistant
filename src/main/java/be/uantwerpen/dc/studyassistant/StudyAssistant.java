@@ -214,7 +214,7 @@ public class StudyAssistant extends HttpServlet {
             JsonObject obj = this.getCoreChartsJson("Light");
             this.printJson(obj, response);            
         } else if (urlPath.equalsIgnoreCase("/resources/bubbleindex")){            
-            JsonObject obj = this.getCoreChartsJson("Index");
+            JsonObject obj = this.getCoreChartsJson("Environment Index Score");
             this.printJson(obj, response);            
         } else if (urlPath.equalsIgnoreCase("/resources/minmax")){            
             JsonObject obj = this.findMinMax();
@@ -268,32 +268,46 @@ public class StudyAssistant extends HttpServlet {
                 JsonObject v2 = new JsonObject();
                 
                 if(property.equalsIgnoreCase("temperature")){
-                    v2.addProperty("v", e.getDs18b20temp());                    
+                    v2.addProperty("v", e.getDs18b20temp());  
+                    row.add(v2);
+                    c.add("c", row);
+                    rows.add(c);
+                    obj.add("rows", rows);
                 } else if(property.equalsIgnoreCase("humidity")){
-                    v2.addProperty("v", e.getDht11hum());                    
+                    v2.addProperty("v", e.getDht11hum());      
+                    row.add(v2);
+                    c.add("c", row);
+                    rows.add(c);
+                    obj.add("rows", rows);
                 } else if(property.equalsIgnoreCase("loudness")){
                     v2.addProperty("v", e.getArduinoloudness());                    
+                    row.add(v2);
+                    c.add("c", row);
+                    rows.add(c);
+                    obj.add("rows", rows);
                 } else if(property.equalsIgnoreCase("light")){
                     v2.addProperty("v", e.getArduinolight());                    
-                } else if(property.equalsIgnoreCase("index")){
+                    row.add(v2);
+                    c.add("c", row);
+                    rows.add(c);
+                    obj.add("rows", rows);
+                } else if(property.equalsIgnoreCase("Environment Index Score")){
                     StudyIndex in = null;
                     double index = 0;
                     try{
                         in = new StudyIndex(e);  
                         index = in.getStudyIndex();
                     } catch (Exception exc){
-                        Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, exc);                                                
+                        //Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, exc);                                                
                     }
                     v2.addProperty("v", index);
+                    row.add(v2);
+                    c.add("c", row);
+                    rows.add(c);
+                    obj.add("rows", rows);
                 }
-                
-                row.add(v2);
-                
-                c.add("c", row);
-                
-                rows.add(c);
             }
-            obj.add("rows", rows);
+            
             
             return obj;
     }
@@ -449,7 +463,7 @@ public class StudyAssistant extends HttpServlet {
         types.add("Loudness");
         types.add("Luminance");
         types.add("Alcohol");
-        types.add("Methaine");
+        types.add("Methane");
         types.add("Pressure");
         
             JsonObject obj = new JsonObject();
@@ -542,7 +556,7 @@ public class StudyAssistant extends HttpServlet {
                     
                     c.add("c", row); 
                     rows.add(c);
-                } else if(s.equalsIgnoreCase("methaine")){
+                } else if(s.equalsIgnoreCase("methane")){
                     JsonObject v2 = new JsonObject();
                     v2.addProperty("v", minMethaine);
                     row.add(v2);

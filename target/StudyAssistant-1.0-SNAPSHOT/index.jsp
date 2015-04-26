@@ -30,14 +30,9 @@
                     <li><a href="#about">About</a></li>
                     <li><a href="#services">Study Index</a></li>
                     <li><a href="#works">Timeline</a></li>
+                    <li><a href="#more">Suggestions</a></li>
+                    <li><a href="#techstuff">TechStuff</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li>
-                        <a href="#">Sub Menu</a>
-                        <ul class="dl-submenu">
-                            <li><a href="#">Sub menu</a></li>
-                            <li><a href="#">Sub menu</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </div><!-- /dl-menuwrapper -->
         </div>	
@@ -176,7 +171,45 @@
                     </div>
                 </div>
             </div>
-        </section>	  
+        </section>
+        
+        <!-- More -->
+        <section id="more" class="home-section bg-gray">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8">
+                        <div class="section-heading">
+                            <h2>Sound Therapy</h2>
+                            <p>Binaural beats are signals of two different frequencies which are presented separately, one to each ear. Your brain detects the phase variation between the frequencies and tries to reconcile that difference. Research has proven that introducing a binaural beat will cause the brain to begin resonating in tune with that beat.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/WPni755-Krg?list=RDWPni755-Krg" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Tech Stuff -->
+        <section id="techstuff" class="home-section bg-gray">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8">
+                        <div class="section-heading">
+                            <h2>Behind the scenes</h2>
+                                <img style="width: 800px; height: 600px;" src="assets/img/architecture.png"/>
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/WPni755-Krg?list=RDWPni755-Krg" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- spacer 2 -->	  
         <section id="spacer2" class="home-section spacer">	
@@ -278,7 +311,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <p>Copyright &copy;2014 Mamba company. All rights reserved. By <a href="http://bootstraptaste.com">Bootstraptaste</a></p>
+                        <p>Copyright &copy;2015. All rights reserved.</p>
                     </div>
                 </div>		
             </div>	
@@ -299,56 +332,76 @@
 
         <script type="text/javascript">
             
+            var oldJsonData;
+            
             $(function() {
                 $( "#tabs" ).tabs();
+                
+                
                 
                 $( "#humidity_chart_link" ).click(function() {
                     var destinationUrl = "http://localhost:8080/StudyAssistant/resources/humidity";
                     var element = "humidity_chart";
                     var color = "green";
-                    drawCoreChart(destinationUrl, element, color);
+                    var format = "#";
+                    var title = "Humidity History";
+                    $("#extremes_chart").hide();
+                    drawCoreChart(destinationUrl, element, color, format, title);
                 });
                 
                 $( "#temperature_chart_link" ).click(function() {
                     var destinationUrl = "http://localhost:8080/StudyAssistant/resources/temperature";
                     var element = "temperature_chart";
                     var color = "red";
-                    drawCoreChart(destinationUrl, element, color);
+                    var format = '# C';
+                    var title = 'Temperature History';
+                    $("#extremes_chart").hide();
+                    drawCoreChart(destinationUrl, element, color, format, title);
                 });
                 
                 $( "#loudness_chart_link" ).click(function() {
                     var destinationUrl = "http://localhost:8080/StudyAssistant/resources/loudness";
                     var element = "loudness_chart";
                     var color = "blue";
-                    drawCoreChart(destinationUrl, element, color);
+                    var format = '#';
+                    var title = 'Noise History';
+                    $("#extremes_chart").hide();
+                    drawCoreChart(destinationUrl, element, color, format, title);
                 });
                 
                 $( "#light_chart_link" ).click(function() {
                     var destinationUrl = "http://localhost:8080/StudyAssistant/resources/light";
                     var element = "light_chart";
                     var color = "orange";
-                    drawCoreChart(destinationUrl, element, color);
+                    var format = '# lux';
+                    var title = 'Luminisence History';
+                    $("#extremes_chart").hide();
+                    drawCoreChart(destinationUrl, element, color, format, title);
                 });
                 
                 $( "#index_chart_link" ).click(function() {
                     var destinationUrl = "http://localhost:8080/StudyAssistant/resources/bubbleindex";
                     var element = "index_chart";
                     var color = "black";
-                    drawLineChart(destinationUrl, element, color);
+                    var format = '# &#37;';
+                    var title = 'Environment Index Score History';
+                    $("#extremes_chart").hide();
+                    drawLineChart(destinationUrl, element, color, title);
                 });
                 
                 $( "#extremes_chart_link" ).click(function() {
                     var destinationUrl = "http://localhost:8080/StudyAssistant/resources/minmax";
                     var element = "extremes_chart";
                     var color = "magenta";
+                    $("#extremes_chart").show();
                     drawTableChart(destinationUrl, element, color);
                 });
                 
             });
-
+            
             google.setOnLoadCallback(drawChart);
             //google.setOnLoadCallback(drawCoreChart("http://localhost:8080/StudyAssistant/resources/temperature", "temperature_chart", "red"));
-            google.setOnLoadCallback(drawLineChart("http://localhost:8080/StudyAssistant/resources/bubbleindex", "index_chart", "black"));
+            google.setOnLoadCallback(drawLineChart("http://localhost:8080/StudyAssistant/resources/bubbleindex", "index_chart", "black", "Environment Index Score History"));
             function drawChart() {
 
                 //var destinationUrl = "https://"+window.location.host+"<%=request.getContextPath()%>" + "/resources/gauge";
@@ -398,7 +451,7 @@
     //        }, 26000);
             }
 
-            function drawCoreChart(destUrl, element, color) {
+            function drawCoreChart(destUrl, element, color, format, title) {
 
                 var jsonData = $.ajax({
                     url: destUrl,
@@ -417,10 +470,10 @@
     //        ]);
 
                 var options = {
-                    title: 'Environment History',
+                    title: title,
                     colors: [color],
                     hAxis: {title: 'Date', titleTextStyle: {color: '#333'}},
-                    vAxis: {minValue: 0}
+                    vAxis: {minValue: 0, format: format}
                 };
 
                 var chart = new google.visualization.AreaChart(document.getElementById(element));
@@ -457,7 +510,7 @@
                 chart.draw(data, options);
             }
             
-            function drawLineChart(destUrl, element, color) {
+            function drawLineChart(destUrl, element, color, title) {
                 
                 var jsonData = $.ajax({
                     url: destUrl,
@@ -468,7 +521,7 @@
                 var data = new google.visualization.DataTable(jsonData);
 
                 var options = {
-                  title: 'Index History',
+                  title: title,
                   colors: [color],
                   curveType: 'function',
                   legend: { position: 'bottom' }
@@ -487,12 +540,13 @@
                     async: false
                 }).responseText;
                 
-                console.log(jsonData);
+                oldJsonData = jsonData;
                 
                 var options = {
                     title: 'Minimal and maximal values of all sensors',
                     width: '800px',
                     height: '350px',
+                    allowHtml: true,
                     showRowNumber: false
                 };
 
