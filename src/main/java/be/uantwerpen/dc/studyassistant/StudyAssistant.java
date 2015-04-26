@@ -186,6 +186,25 @@ public class StudyAssistant extends HttpServlet {
             col2.addProperty("type", "number");
             cols.add(col2);
             
+            JsonObject col3 = new JsonObject();
+            col3.addProperty("id", "Humidity");
+            col3.addProperty("label", "Humidity");
+            col3.addProperty("type", "number");
+            cols.add(col3);
+            
+            JsonObject col4 = new JsonObject();
+            col4.addProperty("id", "Loudness");
+            col4.addProperty("label", "Loudness");
+            col4.addProperty("type", "number");
+            cols.add(col4);
+            
+            JsonObject col5 = new JsonObject();
+            col5.addProperty("id", "Light");
+            col5.addProperty("label", "Light");
+            col5.addProperty("type", "number");
+            cols.add(col5);
+            
+            
             obj.add("cols", cols);
             
             for(Environment e: envs ){
@@ -199,7 +218,19 @@ public class StudyAssistant extends HttpServlet {
                 JsonObject v2 = new JsonObject();
                 v2.addProperty("v", e.getDs18b20temp());
                 row.add(v2);
+                
+                JsonObject v3 = new JsonObject();
+                v3.addProperty("v", e.getDht11hum());
+                row.add(v3);
 
+                JsonObject v4 = new JsonObject();
+                v4.addProperty("v", e.getArduinoloudness());
+                row.add(v4);
+                
+                JsonObject v5 = new JsonObject();
+                v5.addProperty("v", e.getArduinolight());
+                row.add(v5);
+                
                 c.add("c", row);
                 
                 rows.add(c);
