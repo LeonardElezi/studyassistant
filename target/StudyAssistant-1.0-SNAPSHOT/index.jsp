@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Mamba - Free Bootstrap 3 one page template</title>
+        <title>Study Assistant - Environmental productivity advisor</title>
         <meta charset="utf-8" />
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- css -->
@@ -50,7 +50,7 @@
                             <div class="brand">
                                 <h1><a href="oldindex.html">Study Assistant</a></h1>
                                 <div class="line-spacer"></div>
-                                <p><span>Your environment and productivity advisor</span></p>
+                                <p><span>Your environmental productivity advisor</span></p>
                                 <div class="img-icon"><img src="assets/img/icons/thermometer.png" alt="" height="42" width="42"/><img src="assets/img/icons/loud.png" alt="" height="42" width="42"/>  <img src="assets/img/icons/lightbulb.png" alt="" height="42" width="42"/> <img src="assets/img/icons/pollution.png" alt="" height="42" width="42"/></div>
 
                             </div>
@@ -71,7 +71,7 @@
                     <div class="col-md-offset-2 col-md-8">
                         <div class="section-heading">
                             <h2>About Study Assistant</h2>
-                            <p>Did you know that your productivity decreases when your room is too cold, too hot, too noisy, too dim, too bright or the air is too polluted? Study assistant monitors all these factors for you and helps you tweak them around for an environment where your productivity peaks.</p>
+                            <p>Did you know that your productivity decreases when your room is too cold, too hot, too noisy, too dim, too bright or the air is too polluted? Study assistant monitors all these factors for you and helps you tweak them for an environment where your productivity peaks!</p>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                         <div class="box-team wow bounceInDown">
                             <img src="assets/img/icons/loudblack.png" alt="" class="img-responsive" />
                             <h4>Too noisy</h4>
-                            <p>If you can hear someone talking while you’re reading or writing, your productivity dips by up to 66%. A 20 decibel increase in aircraft noise is enough to delay a student’s reading level by up to 8 months.</p>
+                            <p>If you can hear someone talking while you’re reading or writing, your productivity dips by up to 66%.</p>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" data-wow-delay="0.5s">
@@ -103,7 +103,7 @@
                         <div class="box-team wow bounceInDown">
                             <img src="assets/img/icons/pollutionblack.png" alt="" class="img-responsive" />
                             <h4>Too polluted</h4>
-                            <p>It has now been shown beyond reasonable doubt that poor indoor air quality in buildings can decrease productivity in addition to causing visitors to express dissatisfaction. The size of the effect on most aspects of office work performance appears to be as high as 6-9%.</p>
+                            <p>It has  been shown beyond reasonable doubt by studies, that poor indoor air quality in buildings can decrease productivity in addition to causing visitors to express dissatisfaction. The size of the effect on most aspects of office work performance appears to be as high as 6-9%.</p>
                         </div>
                     </div>
                 </div>			  
@@ -131,7 +131,7 @@
                     <div class="col-md-offset-2 col-md-8">
                         <div class="section-heading">
                             <h2>Your current Environment Study Index!</h2>
-                            <p>Index is a number between 0 (Worst environment conditions) and 100% (Best environment conditions). It is gives a score to your environment and predicts the productivity gains from your environment.</p>
+                            <p>Index is a number between 0 (Worst environment conditions) and 100% (Best environment conditions). It assigns a score - environmental study suitability index - and provides usable advice in order to improve your productivity!</p>
                             
                             <div id="chart_div" style="width: 400px; height: 120px;"></div>
                             <div style="margin-top: -135px; margin-left: 80px;"><h3>Advice</h3><div id="advice"><div></div>
@@ -180,7 +180,7 @@
                     <div class="col-md-offset-2 col-md-8">
                         <div class="section-heading">
                             <h2>Sound Therapy</h2>
-                            <p>Binaural beats are signals of two different frequencies which are presented separately, one to each ear. Your brain detects the phase variation between the frequencies and tries to reconcile that difference. Research has proven that introducing a binaural beat will cause the brain to begin resonating in tune with that beat.</p>
+                            <p>Binaural beats are signals of two different frequencies which are presented separately, one to each ear. Your brain detects the phase variation between the frequencies and tries to reconcile that difference. Research has proven that introducing a binaural beat will cause the brain to begin resonating in tune with that beat. Alpha waves are especially useful for increased concentration.</p>
                         </div>
                     </div>
                 </div>
@@ -199,13 +199,8 @@
                     <div class="col-md-offset-2 col-md-8">
                         <div class="section-heading">
                             <h2>Behind the scenes</h2>
-                                <img style="width: 800px; height: 600px;" src="assets/img/architecture.png"/>
+                                <img style="width: 828px; height: 480px;" src="assets/img/architecture.png"/>
                             </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-offset-2 col-md-8">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/WPni755-Krg?list=RDWPni755-Krg" frameborder="0" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>
@@ -340,7 +335,7 @@
                 
                 
                 $( "#humidity_chart_link" ).click(function() {
-                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/humidity";
+                    var destinationUrl = "http://localhost:56619/StudyAssistant/resources/humidity";
                     var element = "humidity_chart";
                     var color = "green";
                     var format = "#";
@@ -350,7 +345,7 @@
                 });
                 
                 $( "#temperature_chart_link" ).click(function() {
-                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/temperature";
+                    var destinationUrl = "http://localhost:56619/StudyAssistant/resources/temperature";
                     var element = "temperature_chart";
                     var color = "red";
                     var format = '# C';
@@ -360,7 +355,7 @@
                 });
                 
                 $( "#loudness_chart_link" ).click(function() {
-                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/loudness";
+                    var destinationUrl = "http://localhost:56619/StudyAssistant/resources/loudness";
                     var element = "loudness_chart";
                     var color = "blue";
                     var format = '#';
@@ -370,17 +365,17 @@
                 });
                 
                 $( "#light_chart_link" ).click(function() {
-                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/light";
+                    var destinationUrl = "http://localhost:56619/StudyAssistant/resources/light";
                     var element = "light_chart";
                     var color = "orange";
                     var format = '# lux';
-                    var title = 'Luminisence History';
+                    var title = 'Luminance History';
                     $("#extremes_chart").hide();
                     drawCoreChart(destinationUrl, element, color, format, title);
                 });
                 
                 $( "#index_chart_link" ).click(function() {
-                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/bubbleindex";
+                    var destinationUrl = "http://localhost:56619/StudyAssistant/resources/bubbleindex";
                     var element = "index_chart";
                     var color = "black";
                     var format = '# &#37;';
@@ -390,7 +385,7 @@
                 });
                 
                 $( "#extremes_chart_link" ).click(function() {
-                    var destinationUrl = "http://localhost:8080/StudyAssistant/resources/minmax";
+                    var destinationUrl = "http://localhost:56619/StudyAssistant/resources/minmax";
                     var element = "extremes_chart";
                     var color = "magenta";
                     $("#extremes_chart").show();
@@ -400,15 +395,15 @@
             });
             
             google.setOnLoadCallback(drawChart);
-            //google.setOnLoadCallback(drawCoreChart("http://localhost:8080/StudyAssistant/resources/temperature", "temperature_chart", "red"));
-            google.setOnLoadCallback(drawLineChart("http://localhost:8080/StudyAssistant/resources/bubbleindex", "index_chart", "black", "Environment Index Score History"));
+            //google.setOnLoadCallback(drawCoreChart("http://localhost:56619/StudyAssistant/resources/temperature", "temperature_chart", "red"));
+            google.setOnLoadCallback(drawLineChart("http://localhost:56619/StudyAssistant/resources/bubbleindex", "index_chart", "black", "Environment Index Score History"));
             function drawChart() {
 
                 //var destinationUrl = "https://"+window.location.host+"<%=request.getContextPath()%>" + "/resources/gauge";
 
 
                 var jsonData = $.ajax({
-                    url: "http://localhost:8080/StudyAssistant/resources/gauge",
+                    url: "http://localhost:56619/StudyAssistant/resources/gauge",
                     dataType: "json",
                     async: false
                 }).responseText;

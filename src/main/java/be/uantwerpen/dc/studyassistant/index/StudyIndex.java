@@ -119,7 +119,17 @@ public class StudyIndex {
                 loudnessOptimalValue)/(loudnessOptimalValue * 42)));
         
         // 300 = log((C15/6.5), 50)* 1.3
-        this.lightIndex = logBase((light/6.5), 50)* 1.3;
+        if (light <= 5)
+            this.lightIndex = 0.0;
+        else // light > 150
+            this.lightIndex = logBase((light/6.5), 50)* 1.3;
+        
+        // Check for limits
+        if (this.lightIndex < 0)
+            this.lightIndex = 0;
+        else if (this.lightIndex > 1)
+            this.lightIndex = this.lightIndex % 1;
+            
     }
     
     public double logBase(double num, double base) {

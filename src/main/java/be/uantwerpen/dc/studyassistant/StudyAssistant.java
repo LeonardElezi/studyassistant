@@ -173,7 +173,7 @@ public class StudyAssistant extends HttpServlet {
             JsonObject msg4 = new JsonObject();
             msg = "";
             if (lastRecord.getArduinoloudness() > StudyIndex.loudnessOptimalValue){
-                msg += "Room is too noisy. Find a quiter place!";
+                msg += "Room is too noisy!";
                 msg4.addProperty("text", msg);
                 messages.add(msg4);
             }   
@@ -315,7 +315,7 @@ public class StudyAssistant extends HttpServlet {
     private ArrayList<Environment> getEnvironmentResources(){
         URL url = null;        
         try {
-            url = new URL("https://192.168.2.33:8443/logs");
+            url = new URL("https://192.168.1.5:8443/logs");
         } catch (MalformedURLException ex) {
             Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -345,7 +345,7 @@ public class StudyAssistant extends HttpServlet {
     private Environment getLastEnvironmentRecord(){
         URL url = null;        
         try {
-            url = new URL("https://192.168.2.33:8443/log");
+            url = new URL("https://192.168.1.5:8443/log");
         } catch (MalformedURLException ex) {
             Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
         }

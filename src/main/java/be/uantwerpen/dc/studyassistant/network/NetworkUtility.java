@@ -39,7 +39,7 @@ public class NetworkUtility
     public static void main(String[] args) throws Exception
     {
 
-        URL url = new URL("https://192.168.43.72:8443/logs");
+        URL url = new URL("https://192.168.1.5:8443/logs");
         //URL url = new URL("https://localhost:8443/");
 
         // Disable first
