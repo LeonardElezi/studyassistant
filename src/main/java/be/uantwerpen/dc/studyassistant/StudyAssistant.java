@@ -173,7 +173,7 @@ public class StudyAssistant extends HttpServlet {
             JsonObject msg4 = new JsonObject();
             msg = "";
             if (lastRecord.getArduinoloudness() > StudyIndex.loudnessOptimalValue){
-                msg += "Room is too noisy. Find a quiter place!";
+                msg += "Room is too noisy!";
                 msg4.addProperty("text", msg);
                 messages.add(msg4);
             }   
