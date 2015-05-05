@@ -315,14 +315,16 @@ public class StudyAssistant extends HttpServlet {
     private ArrayList<Environment> getEnvironmentResources(){
         URL url = null;        
         try {
-            url = new URL("https://192.168.2.33:8443/logs");
+            //url = new URL("https://192.168.2.33:8443/logs");
+            url = new URL("https://demo3407181.mockable.io/logs");
+            
         } catch (MalformedURLException ex) {
             Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
         }
         
             String jstring = null;
             try {
-                jstring = NetworkUtility.request(url, false, true);
+                jstring = NetworkUtility.request(url, false, false);
             } catch (Exception ex) {
                 Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -345,14 +347,15 @@ public class StudyAssistant extends HttpServlet {
     private Environment getLastEnvironmentRecord(){
         URL url = null;        
         try {
-            url = new URL("https://192.168.2.33:8443/log");
+            //url = new URL("https://192.168.2.33:8443/log");
+            url = new URL("https://demo3407181.mockable.io/log");
         } catch (MalformedURLException ex) {
             Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
         }
         
             String jstring = null;
             try {
-                jstring = NetworkUtility.request(url, false, true);
+                jstring = NetworkUtility.request(url, false, false);
             } catch (Exception ex) {
                 Logger.getLogger(StudyAssistant.class.getName()).log(Level.SEVERE, null, ex);
             }
